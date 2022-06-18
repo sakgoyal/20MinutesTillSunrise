@@ -46,12 +46,12 @@ namespace QuickSDL {
 		//color - The color of the text to be rendered
 		//------------------------------------------------------------
 		Texture(std::string text, std::string fontpath, int size, SDL_Color color);
-		~Texture();
+		virtual ~Texture() = 0;
 
 		//----------------------------------------------
 		//Called to render the texture to the screen
 		//----------------------------------------------
-		virtual void Render();
+		virtual void Render() override;
 	};
 } // namespace QuickSDL
 #endif

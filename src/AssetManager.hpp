@@ -1,75 +1,119 @@
-#ifndef _ASSETMANAGER_H
-#define _ASSETMANAGER_H
+#pragma once
 #include "Graphics.hpp"
 #include <SDL_mixer.h>
 #include <map>
+using std::map;
+using std::string;
 namespace QuickSDL {
 	class AssetManager {
-	  private:
-		//Needed to make AssetManager a singleton class
-		static AssetManager *sInstance;
-
-		//Used to cache all loaded images
-		std::map<std::string, SDL_Texture *> mTextures;
-		//Used to cache all rendered text converted to textures
-		std::map<std::string, SDL_Texture *> mText;
-		//Used to cache all loaded fonts
-		std::map<std::string, TTF_Font *> mFonts;
-		//Used to cache all loaded music files
-		std::map<std::string, Mix_Music *> mMusic;
-		//Used to cache all loaded sound effect files
-		std::map<std::string, Mix_Chunk *> mSFX;
-
 	  public:
-		//-----------------------------------------
-		//Returns a pointer to the class instance
-		//-----------------------------------------
-		static AssetManager *Instance();
-		//-----------------------------------------------------
-		//Releases the class instance and sets it back to NULL
-		//-----------------------------------------------------
-		static void Release();
+		static AssetManager *Instance() {
+			if (!sInstance) sInstance = new AssetManager();
+			return sInstance;
+		}
+		static void Release() {
+			delete sInstance;
+			sInstance = NULL;
+		}
+		SDL_Texture *GetTexture(string filename) {
+			//Get the full path of the file
+			string fullPath = SDL_GetBasePath();
+			fullPath.append("Assets/" + filename);
 
-		//----------------------------------------------------------------------------------------------
-		//Should be used when any texture needs to be loaded from file
-		//If the texture was not previously loaded, it is loaded from file then cached are returned
-		//otherwise, the already cached texture is returned
-		//----------------------------------------------------------------------------------------------
-		SDL_Texture *GetTexture(std::string filename);
+			//If the file has not been already loaded, load it and add it to the mTextures map
+			if (mTextures[fullPath] == nullptr)
+				mTextures[fullPath] = Graphics::Instance()->LoadTexture(fullPath);
 
-		//-------------------------------------------------------------------------------------------------------------------
-		//If the given text with the same font and size and color was renderer previously, the cached texture is returned
-		//If it has not been rendered before, the text is rendered and cached, then returned to be reused again later
-		//-------------------------------------------------------------------------------------------------------------------
-		SDL_Texture *GetText(std::string text, std::string filename, int size, SDL_Color color);
+			//returning the cached file from the map
+			return mTextures[fullPath];
+		}
+		SDL_Texture *GetText(string text, string filename, int size, SDL_Color color) {
+			//Get the font from the font cache
+			TTF_Font *font = GetFont(filename, size);
 
-		//------------------------------------------------------------------------------------------
-		//If the music file was opened before, the cached Mix_Music* is returned
-		//otherwise, the file is loaded and converted into a Mix_Music* and cached then returned
-		//------------------------------------------------------------------------------------------
-		Mix_Music *GetMusic(std::string filename);
+			//The key takes into account the font, text, size, and color to differentiate text textures
+			string key = text + filename + (char)size + (char)color.r + (char)color.b + (char)color.g;
 
-		//------------------------------------------------------------------------------------------
-		//If the SFX file was opened before, the cached Mix_Chunk* is returned
-		//otherwise, the file is loaded and converted into a Mix_Chunk* and cached then returned
-		//------------------------------------------------------------------------------------------
-		Mix_Chunk *GetSFX(std::string filename);
+			//If the same text has not been rendered before, render it and add it to the mText map
+			if (mText[key] == nullptr)
+				mText[key] = Graphics::Instance()->CreateTextTexture(font, text, color);
+
+			//returning the cached texture containing the text
+			return mText[key];
+		}
+		Mix_Music *GetMusic(string filename) {
+			//Get the full path of the WAV file
+			string fullPath = SDL_GetBasePath();
+			fullPath.append("Assets/" + filename);
+
+			//If the file has not been already loaded, load it and add it to the mMusic map
+			if (mMusic[fullPath] == nullptr) {
+				mMusic[fullPath] = Mix_LoadMUS(fullPath.c_str());
+				//Error handling for file loading
+				if (mMusic[fullPath] == NULL)
+					printf("Music Loading Error: File-%s Error-%s", filename.c_str(), Mix_GetError());
+			}
+
+			//returning the cached file from the map
+			return mMusic[fullPath];
+		}
+		Mix_Chunk *GetSFX(string filename) {
+			//Get the full path of the WAV file
+			string fullPath = SDL_GetBasePath();
+			fullPath.append("Assets/" + filename);
+
+			//If the file has not been already loaded, load it and add it to the mSFX map
+			if (mSFX[fullPath] == nullptr) {
+				mSFX[fullPath] = Mix_LoadWAV(fullPath.c_str());
+				//Error handling for file loading
+				if (mSFX[fullPath] == NULL)
+					printf("SFX Loading Error: File-%s Error-%s", filename.c_str(), Mix_GetError());
+			}
+
+			//returning the cached file from the map
+			return mSFX[fullPath];
+		}
 
 	  private:
-		//-----------------------------------------------------------------------------------------
-		//Contructor is private so that Instance() must be used to get an instance when needed
-		//-----------------------------------------------------------------------------------------
-		AssetManager();
-		//------------------------------------------------------------------------------------
-		//Destructor is private so that the instance can only be destroyed using Release()
-		//------------------------------------------------------------------------------------
-		~AssetManager();
-
-		//-----------------------------------------------------------------------------------
-		//If the same font and size was loaded before, the cached TTF_Font* is returned
-		//otherwise, the font is loaded and cached, then returned
-		//-----------------------------------------------------------------------------------
-		TTF_Font *GetFont(std::string filename, int size);
+		AssetManager() = default;
+		~AssetManager() {
+			//Freeing all loaded assets
+			for (auto &[fir, sec]: mTextures) {
+				if (sec) SDL_DestroyTexture(sec);
+			}
+			for (auto &[fir, sec]: mText) {
+				if (sec) SDL_DestroyTexture(sec);
+			}
+			for (auto &[fir, sec]: mFonts) {
+				if (sec) TTF_CloseFont(sec);
+			}
+			for (auto &[fir, sec]: mMusic) {
+				if (sec) Mix_FreeMusic(sec);
+			}
+			for (auto &[fir, sec]: mSFX) {
+				if (sec) Mix_FreeChunk(sec);
+			}
+			mTextures.clear();
+			mText.clear();
+			mFonts.clear();
+			mMusic.clear();
+			mSFX.clear();
+		}
+		TTF_Font *GetFont(string &filename, int size) {
+			string fullPath = SDL_GetBasePath();
+			fullPath.append("Assets/" + filename);
+			string key = fullPath + (char)size;
+			if (!mFonts[key]) {
+				mFonts[key] = TTF_OpenFont(fullPath.c_str(), size);
+				if (!mFonts[key]) printf("Font Loading Error: Font-%s Error-%s", filename.c_str(), TTF_GetError());
+			}
+			return mFonts[key];
+		}
+		map<string, SDL_Texture *> mTextures; //Used to cache all loaded assets
+		map<string, SDL_Texture *> mText;
+		map<string, TTF_Font *> mFonts;
+		map<string, Mix_Music *> mMusic;
+		map<string, Mix_Chunk *> mSFX;
+		static inline AssetManager *sInstance = NULL;
 	};
 } // namespace QuickSDL
-#endif
