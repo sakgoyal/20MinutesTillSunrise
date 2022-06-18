@@ -1,40 +1,26 @@
-//-----------------------------------------------------------------//
-// AnimatedTexture.h                                               //
-// Extends the Texture class' functionality to handle animations   //
-// Uses the Texture class' spritesheet constructor                 //
-//                                                                 //
-// By: Ather Omar                                                  //
-//-----------------------------------------------------------------//
 #ifndef _ANIMATEDTEXTURE_H
 #define _ANIMATEDTEXTURE_H
-//--------------------------------------------------------------
-#include "Timer.hpp"
 #include "Texture.hpp"
-//--------------------------------------------------------------
-// QuickSDL
-//--------------------------------------------------------------
+#include "Timer.hpp"
 namespace QuickSDL {
-	//----------------------------------------------------------
-	// AnimatedTexture : public Texture
-	//----------------------------------------------------------
-	class AnimatedTexture : public Texture {
-
-	public:
+	class AnimatedTexture: public Texture {
+	  public:
 		//---------------------------------------------------------
 		//WRAP_MODE enum - wrap mode used by the animation
-		//once / loop 
+		//once / loop
 		//---------------------------------------------------------
-		enum WRAP_MODE { once = 0, loop = 1 };
+		enum WRAP_MODE { once = 0,
+						 loop = 1 };
 		//-----------------------------------------------------------------------------------
 		//ANIM_DIR enum - The way the animation sprites are arranged in the spritesheet
 		//horizontal / vertical
 		//------------------------------------------------------------------------------------
-		enum ANIM_DIR { horizontal = 0, vertical = 1 };
+		enum ANIM_DIR { horizontal = 0,
+						vertical = 1 };
 
-	private:
-
+	  private:
 		//Used to get the deltatime to update the animation
-		Timer* mTimer;
+		Timer *mTimer;
 
 		//the first frame's starting pixel's X values on the spritesheet
 		int mStartX;
@@ -59,7 +45,7 @@ namespace QuickSDL {
 		//Is set to true only if the wrap mode is once and the last frame of the animation is reached
 		bool mAnimationDone;
 
-	public:
+	  public:
 		//---------------------------------------------------------------------------------
 		//Loads a texture from from file (relative to the exe path)
 		//Supports spritesheets
@@ -84,5 +70,5 @@ namespace QuickSDL {
 		//---------------------------------------------------------------------------
 		void Update();
 	};
-}
+} // namespace QuickSDL
 #endif

@@ -1,38 +1,22 @@
-//--------------------------------------------------------------//
-// AudioManager.h                                               //
-// Singleton                                                    //
-// Plays WAV files                                              //
-// Can play one BGM at a time, and many sound effects at once   //
-//                                                              //
-// By: Ather Omar                                               //
-//--------------------------------------------------------------//
 #ifndef _AUDIOMANAGER_H
 #define _AUDIOMANAGER_H
-//-----------------------------------------------------------
 #include "AssetManager.hpp"
-//-----------------------------------------------------------
-// QuickSDL
-//-----------------------------------------------------------
 namespace QuickSDL {
-	//-------------------------------------------------------
-	// AudioManager
-	//-------------------------------------------------------
 	class AudioManager {
-
-	private:
+	  private:
 		//Needed to make AudioManager a singleton class
-		static AudioManager* sInstance;
+		static AudioManager *sInstance;
 
 		//Used to load audio files
-		AssetManager* mAssetMgr;
+		AssetManager *mAssetMgr;
 
-	public:
+	  public:
 		//-----------------------------------------
-		//Returns a pointer to the class instance  
+		//Returns a pointer to the class instance
 		//-----------------------------------------
-		static AudioManager* Instance();
+		static AudioManager *Instance();
 		//-----------------------------------------------------
-		//Releases the class instance and sets it back to NULL 
+		//Releases the class instance and sets it back to NULL
 		//-----------------------------------------------------
 		static void Release();
 
@@ -56,15 +40,15 @@ namespace QuickSDL {
 		//--------------------------------------------------
 		void PlaySFX(std::string filename, int loops = 0, int channel = 0);
 
-	private:
+	  private:
 		//------------------------------------------------------------------------------------------
-		//Contructor is private so that Instance() must be used to get an instance when needed  
+		//Contructor is private so that Instance() must be used to get an instance when needed
 		//------------------------------------------------------------------------------------------
 		AudioManager();
 		//-------------------------------------------------------------------------------------
-		//Destructor is private so that the instance can only be destroyed using Release()  
+		//Destructor is private so that the instance can only be destroyed using Release()
 		//-------------------------------------------------------------------------------------
 		~AudioManager();
 	};
-}
+} // namespace QuickSDL
 #endif

@@ -1,20 +1,7 @@
-//-----------------------------------------------------------------//
-// Texture.cpp                                                     //
-// Singleton                                                       //
-// The base class for all textures to be rendered on screen        //
-// Can load full textures, or clipped textures from a spritesheet  //
-// or convert a string into a texture to be rendered               //
-//                                                                 //
-// By: Ather Omar                                                  //
-//-----------------------------------------------------------------//
 #include "Texture.hpp"
-//--------------------------------------------------------------
-// QuickSDL
-//--------------------------------------------------------------
 namespace QuickSDL {
 
 	Texture::Texture(std::string filename) {
-
 		mGraphics = Graphics::Instance();
 
 		//Loads the texture from the AssetManager to avoid loading textures more than once
@@ -31,7 +18,6 @@ namespace QuickSDL {
 	}
 
 	Texture::Texture(std::string filename, int x, int y, int w, int h) {
-
 		mGraphics = Graphics::Instance();
 
 		//Loads the texture from the AssetManager to avoid loading textures more than once
@@ -54,7 +40,6 @@ namespace QuickSDL {
 	}
 
 	Texture::Texture(std::string text, std::string fontPath, int size, SDL_Color color) {
-
 		mGraphics = Graphics::Instance();
 
 		//Loads the texture from the AssetManager to avoid loading textures more than once
@@ -71,19 +56,17 @@ namespace QuickSDL {
 	}
 
 	Texture::~Texture() {
-
 		mTex = NULL;
 		mGraphics = NULL;
 	}
 
 	void Texture::Render() {
-
 		Vector2 pos = Pos(world);
 		Vector2 scale = Scale(world);
 
 		//Centers the texture on the texture's world position so that its position is not the top left corner
-		mRenderRect.x = (int)(pos.x - mWidth*scale.x*0.5f);
-		mRenderRect.y = (int)(pos.y - mHeight*scale.y*0.5f);
+		mRenderRect.x = (int)(pos.x - mWidth * scale.x * 0.5f);
+		mRenderRect.y = (int)(pos.y - mHeight * scale.y * 0.5f);
 
 		//Scales the width and height according to the scale of the GameEntity
 		mRenderRect.w = (int)(mWidth * scale.x);
@@ -91,4 +74,4 @@ namespace QuickSDL {
 
 		mGraphics->DrawTexture(mTex, (mClipped) ? &mClipRect : NULL, &mRenderRect, Rotation(world));
 	}
-}
+} // namespace QuickSDL

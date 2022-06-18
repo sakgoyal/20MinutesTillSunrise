@@ -1,8 +1,7 @@
 #include "GameManager.hpp"
 
-int main(int argc, char* argv[]) {
-
-	QuickSDL::GameManager* game = QuickSDL::GameManager::Instance();
+int main(int argc, char *argv[]) {
+	QuickSDL::GameManager *game = QuickSDL::GameManager::Instance();
 
 	game->Run();
 

@@ -1,32 +1,15 @@
-//-----------------------------------------------------------------//
-// Texture.h                                                       //
-// The base class for all textures to be rendered on screen        //
-// Can load full textures, or clipped textures from a spritesheet  //
-// or convert a string into a texture to be rendered               //
-//                                                                 //
-// By: Ather Omar                                                  //
-//-----------------------------------------------------------------//
 #ifndef _TEXTURE_H
 #define _TEXTURE_H
-//---------------------------------------------------------------
-#include "GameEntity.hpp"
 #include "AssetManager.hpp"
-//---------------------------------------------------------------
-// QuickSDL
-//---------------------------------------------------------------
+#include "GameEntity.hpp"
 namespace QuickSDL {
-	//-----------------------------------------------------------
-	// Texture : public GameEntity
-	//-----------------------------------------------------------
-	class Texture : public GameEntity {
-
-	protected:
-
+	class Texture: public GameEntity {
+	  protected:
 		//The SDL_Texture to be rendered
-		SDL_Texture* mTex;
+		SDL_Texture *mTex;
 
 		//Used to render the texture
-		Graphics* mGraphics;
+		Graphics *mGraphics;
 
 		//Width of the texture
 		int mWidth;
@@ -41,7 +24,7 @@ namespace QuickSDL {
 		//Is used to clip the texture from a spritesheet
 		SDL_Rect mClipRect;
 
-	public:
+	  public:
 		//--------------------------------------------------------------
 		//Loads a whole texture from a file (relative to the exe path)
 		//Note: For spritesheets use the other contructor
@@ -70,5 +53,5 @@ namespace QuickSDL {
 		//----------------------------------------------
 		virtual void Render();
 	};
-}
+} // namespace QuickSDL
 #endif

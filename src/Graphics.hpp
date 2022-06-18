@@ -1,58 +1,39 @@
-//---------------------------------------------------------------------//
-// Graphics.h                                                          //
-// Singleton                                                           //
-// Handles the initialization of the graphics related SDL libraries    //
-// and their release                                                   //
-// Also handles texture and text loading                               //
-//                                                                     //
-// By: Ather Omar                                                      //
-//---------------------------------------------------------------------//
 #ifndef _GRAPHICS_H
 #define _GRAPHICS_H
-//-------------------------------------------------------------------
-#include <string>
-#include <stdio.h>
-//-------------------------------------------------------------------
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-//-------------------------------------------------------------------
-// QuickSDL
-//-------------------------------------------------------------------
+#include <stdio.h>
+#include <string>
 namespace QuickSDL {
-	//---------------------------------------------------------------
-	// Graphics
-	//---------------------------------------------------------------
 	class Graphics {
-
-	public:
-
+	  public:
 		//The Width of the game's window
 		const int SCREEN_WIDTH = 800;
 		//The Height of the game's window
 		const int SCREEN_HEIGHT = 600;
 		//The title of the game's window
-		const char* WINDOW_TITLE = "QuickSDL";
+		const char *WINDOW_TITLE = "QuickSDL";
 
-	private:
+	  private:
 		//Needed to make GameManager a singleton class
-		static Graphics* sInstance;
+		static Graphics *sInstance;
 		//Is set to true if all the graphics libraries initialized correctly
 		static bool sInitialized;
 
 		//The window created using SDL
-		SDL_Window* mWindow;
+		SDL_Window *mWindow;
 
 		//The renderer used to render all textures
-		SDL_Renderer* mRenderer;
+		SDL_Renderer *mRenderer;
 
-	public:
+	  public:
 		//--------------------------------------------
-		//Returns a pointer to the class instance  
+		//Returns a pointer to the class instance
 		//--------------------------------------------
-		static Graphics* Instance();
+		static Graphics *Instance();
 		//--------------------------------------------------------
-		//Releases the class instance and sets it back to NULL 
+		//Releases the class instance and sets it back to NULL
 		//Sets Initialized to false
 		//--------------------------------------------------------
 		static void Release();
@@ -65,12 +46,12 @@ namespace QuickSDL {
 		//Loads a texture from file using the given path
 		//Note: Should only be used by the AssetManager to cache the textures for reuse
 		//----------------------------------------------------------------------------------
-		SDL_Texture* LoadTexture(std::string path);
+		SDL_Texture *LoadTexture(std::string path);
 		//----------------------------------------------------------------------------------
 		//renders a texture from using the given font and text
 		//Note: Should only be used by the AssetManager to cache the textures for reuse
 		//----------------------------------------------------------------------------------
-		SDL_Texture* CreateTextTexture(TTF_Font* font, std::string text, SDL_Color color);
+		SDL_Texture *CreateTextTexture(TTF_Font *font, std::string text, SDL_Color color);
 
 		//--------------------------------------------------------
 		//Clears all rendered textures from the back buffer
@@ -81,7 +62,7 @@ namespace QuickSDL {
 		//------------------------------------------------
 		//Draws the given texture to the back buffer
 		//------------------------------------------------
-		void DrawTexture(SDL_Texture* tex, SDL_Rect* clip = NULL, SDL_Rect* rend = NULL, float angle = 0.0f, SDL_RendererFlip flip = SDL_FLIP_NONE);
+		void DrawTexture(SDL_Texture *tex, SDL_Rect *clip = NULL, SDL_Rect *rend = NULL, float angle = 0.0f, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 		//----------------------------------------------------
 		//Refreshes the back buffer
@@ -89,14 +70,13 @@ namespace QuickSDL {
 		//----------------------------------------------------
 		void Render();
 
-	private:
-
+	  private:
 		//------------------------------------------------------------------------------------------
-		//Contructor is private so that Instance() must be used to get an instance when needed  
+		//Contructor is private so that Instance() must be used to get an instance when needed
 		//------------------------------------------------------------------------------------------
 		Graphics();
 		//--------------------------------------------------------------------------------------
-		//Destructor is private so that the instance can only be destroyed using Release()  
+		//Destructor is private so that the instance can only be destroyed using Release()
 		//--------------------------------------------------------------------------------------
 		~Graphics();
 
@@ -107,5 +87,5 @@ namespace QuickSDL {
 		//------------------------------------------------------------------
 		bool Init();
 	};
-}
+} // namespace QuickSDL
 #endif

@@ -1,27 +1,11 @@
-//----------------------------------------------------//
-// Timer.h                                            //
-// Singleton                                          //
-// Used to keep track of the time between each reset  //
-// A reset is usually called after each frame         //
-//                                                    //
-// By: Ather Omar                                     //
-//----------------------------------------------------//
 #ifndef _TIMER_H
 #define _TIMER_H
-//---------------------------------------------------------------------
 #include <SDL.h>
-//---------------------------------------------------------------------
-// QuickSDL
-//---------------------------------------------------------------------
 namespace QuickSDL {
-	//-----------------------------------------------------------------
-	// Timer
-	//-----------------------------------------------------------------
 	class Timer {
-
-	private:
+	  private:
 		//Needed to make Timer a singleton class
-		static Timer* sInstance;
+		static Timer *sInstance;
 
 		//Contains the time of the last reset
 		unsigned int mStartTicks;
@@ -32,11 +16,11 @@ namespace QuickSDL {
 		//Can be used to speed up or slowdown all entities that transform using it
 		float mTimeScale;
 
-	public:
+	  public:
 		//-----------------------------------------
 		//Returns a pointer to the class instance
 		//-----------------------------------------
-		static Timer* Instance();
+		static Timer *Instance();
 		//-----------------------------------------------------
 		//Releases the class instance and sets it back to NULL
 		//-----------------------------------------------------
@@ -69,8 +53,7 @@ namespace QuickSDL {
 		//--------------------------------------------------------------------
 		void Update();
 
-	private:
-
+	  private:
 		//------------------------------------------------------------------------------------------
 		//Contructor is private so that Instance() must be used to get an instance when needed
 		//------------------------------------------------------------------------------------------
@@ -78,7 +61,7 @@ namespace QuickSDL {
 		//--------------------------------------------------------------------------------------
 		//Destructor is private so that the instance can only be destroyed using Release()
 		//--------------------------------------------------------------------------------------
-		~Timer();
+		~Timer() = default;
 	};
-}
+} // namespace QuickSDL
 #endif
