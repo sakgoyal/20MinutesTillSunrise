@@ -57,7 +57,7 @@ namespace QuickSDL {
 			//returning the cached file from the map
 			return mMusic[fullPath];
 		}
-		Mix_Chunk *GetSFX(string filename) {
+		Mix_Chunk *GetSFX(string &filename) {
 			//Get the full path of the WAV file
 			string fullPath = SDL_GetBasePath();
 			fullPath.append("Assets/" + filename);

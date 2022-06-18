@@ -12,25 +12,6 @@ namespace QuickSDL {
 		return sInstance;
 	}
 
-	void InputManager::Release() {
-		delete sInstance;
-		sInstance = NULL;
-	}
-
-	InputManager::InputManager() {
-		mKeyboardState = SDL_GetKeyboardState(&mKeyLength);
-		//Setting mPrevKeyboardState to be the same length as mKeyboardState
-		mPrevKeyboardState = new Uint8[mKeyLength];
-		//Copying the contents of mKeyboardState into mPrevKeyboardState so that it contains data on the first frame
-		memcpy(mPrevKeyboardState, mKeyboardState, mKeyLength);
-	}
-
-	InputManager::~InputManager() {
-		//Clearing the previous keyboard state array
-		delete[] mPrevKeyboardState;
-		mPrevKeyboardState = NULL;
-	}
-
 	bool InputManager::KeyDown(SDL_Scancode scanCode) {
 		return (mKeyboardState[scanCode] != 0);
 	}

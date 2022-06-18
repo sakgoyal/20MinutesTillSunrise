@@ -1,6 +1,6 @@
 #ifndef _MATHHELPER_H
 #define _MATHHELPER_H
-#include <math.h>
+#include <cmath>
 namespace QuickSDL {
 	#define PI 3.14159265
 	#define DEG_TO_RAD PI / 180.0f
