@@ -6,23 +6,23 @@ namespace QuickSDL {
 	class Texture: public GameEntity {
 	  protected:
 		//The SDL_Texture to be rendered
-		SDL_Texture *mTex;
+		SDL_Texture *mTex = nullptr;
 
 		//Used to render the texture
-		Graphics *mGraphics;
+		Graphics *mGraphics = nullptr;
 
 		//Width of the texture
-		int mWidth;
+		int mWidth = 0;
 		//Height of the texture
-		int mHeight;
+		int mHeight = 0;
 
 		//True if the texture is loaded from a spritesheet
-		bool mClipped;
+		bool mClipped = false;
 
 		//Is used to render the texture on the screen
-		SDL_Rect mRenderRect;
+		SDL_Rect mRenderRect = {0,0,0,0};
 		//Is used to clip the texture from a spritesheet
-		SDL_Rect mClipRect;
+		SDL_Rect mClipRect = {0,0,0,0};
 
 	  public:
 		//--------------------------------------------------------------
