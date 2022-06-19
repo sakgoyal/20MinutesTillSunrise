@@ -1,57 +1,61 @@
-#ifndef _TEXTURE_H
-#define _TEXTURE_H
+#pragma once
 #include "AssetManager.hpp"
 #include "GameEntity.hpp"
 namespace QuickSDL {
+	using std::string;
 	class Texture: public GameEntity {
 	  protected:
-		//The SDL_Texture to be rendered
 		SDL_Texture *mTex = nullptr;
-
-		//Used to render the texture
 		Graphics *mGraphics = nullptr;
-
-		//Width of the texture
 		int mWidth = 0;
-		//Height of the texture
 		int mHeight = 0;
-
-		//True if the texture is loaded from a spritesheet
 		bool mClipped = false;
-
-		//Is used to render the texture on the screen
-		SDL_Rect mRenderRect = {0,0,0,0};
-		//Is used to clip the texture from a spritesheet
-		SDL_Rect mClipRect = {0,0,0,0};
+		SDL_Rect mRenderRect = {0, 0, 0, 0};
+		SDL_Rect mClipRect = {0, 0, 0, 0};
 
 	  public:
-		//--------------------------------------------------------------
-		//Loads a whole texture from a file (relative to the exe path)
-		//Note: For spritesheets use the other contructor
-		//--------------------------------------------------------------
-		Texture(std::string filename);
-		//-------------------------------------------------------------
-		//Loads a texture from from file (relative to the exe path)
-		//Supports spritesheets
-		//x - Starting pixel's X on the spritesheet
-		//y - Starting pixel's Y on the spritesheet
-		//w - The width of the clipped sprite
-		//h - The height of the clipped sprite
-		//-------------------------------------------------------------
-		Texture(std::string filename, int x, int y, int w, int h);
-		//------------------------------------------------------------
+		Texture(string &filename) {
+			mGraphics = Graphics::Instance();
+			mTex = AssetManager::Instance()->GetTexture(filename);
+			SDL_QueryTexture(mTex, NULL, NULL, &mWidth, &mHeight);
+			mRenderRect = {0, 0, mWidth, mHeight};
+		} //Loads a whole texture from a file (relative to the exe path) (NO SPRITESHEET)
+		//Loads a spritesheet texture from from file (relative to the exe path)
+		//x,y - Starting pixel's X,Y on the spritesheet
+		Texture(string &filename, int x, int y, int w, int h) {
+			mClipped = true;
+			mWidth = w;
+			mHeight = h;
+			mGraphics = Graphics::Instance();
+			mTex = AssetManager::Instance()->GetTexture(filename);
+
+			mRenderRect = {0, 0, w, h};
+			mClipRect = {x, y, mWidth, mHeight}; //Setting the clipped rectangle to only get the needed texture from the spritesheet
+		}
 		//Converts the given text into a texture to be rendered
 		//Note: fontpath is relative to the exe path
-		//size - The size of the text to be rendered
-		//color - The color of the text to be rendered
-		//------------------------------------------------------------
-		Texture(std::string text, std::string fontpath, int size, SDL_Color color);
-		virtual ~Texture() = 0;
+		Texture(string &text, string &fontpath, int size, SDL_Color color) {
+			mGraphics = Graphics::Instance();
+			mTex = AssetManager::Instance()->GetText(text, fontpath, size, color);
+			SDL_QueryTexture(mTex, NULL, NULL, &mWidth, &mHeight);
 
-		//----------------------------------------------
-		//Called to render the texture to the screen
-		//----------------------------------------------
-		virtual void Render() override;
+			mRenderRect.w = mWidth;
+			mRenderRect.h = mHeight;
+		}
+		~Texture() override {
+			mTex = NULL;
+			mGraphics = NULL;
+		}
+		void Render() override {
+			const Vector2 pos = Pos(world);
+			const Vector2 scale = Scale(world);
+			mRenderRect.x = (int)(pos.x - (float)mWidth * scale.x * 0.5f);
+			mRenderRect.y = (int)(pos.y - (float)mHeight * scale.y * 0.5f);
+
+			mRenderRect.w = (int)((float)mWidth * scale.x); //Scales the width and height according to the scale of the GameEntity
+			mRenderRect.h = (int)((float)mHeight * scale.y);
+
+			mGraphics->DrawTexture(mTex, (mClipped ? &mClipRect : nullptr), &mRenderRect, (double)Rotation(world));
+		}
 	};
 } // namespace QuickSDL
-#endif
